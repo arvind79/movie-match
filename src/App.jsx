@@ -11,7 +11,7 @@ import PageNotFound from "./pages/pageNotFound/PageNotFound";
 
 import { fetchDataFromApi } from "./utils/api"
 import { useSelector, useDispatch } from 'react-redux'
-import { getApiConfiguration } from './store/homeSlice'
+import { getApiConfiguration, getGenres } from './store/homeSlice'
 
 function App() {
   const dispatch = useDispatch()
@@ -20,6 +20,7 @@ function App() {
 
   useEffect(() => {
     fetchApiConfig()
+    genresCall()
   }, [])
 
   const fetchApiConfig = () => {
@@ -36,19 +37,26 @@ function App() {
 
         dispatch(getApiConfiguration(url))
       })
+  }
 
-    // const options = {
-    //   method: 'GET',
-    //   headers: {
-    //     accept: 'application/json',
-    //     Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MWI3MTMxZDE3M2ZmNjE4ZGMxODQ2N2VmZjQ0MWZjYSIsInN1YiI6IjY0YTVhOTNmNWE5OTE1MDBlM2M4OGVjMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._8Fu5wQwECCLbddk9xkg5tV0xCKgVxSmj_i0Tu27Nbc'
-    //   }
-    // };
+  const genresCall = async () => {
+    let promises = []
+    let endPoints = ["tv", "movie"]
+    let allGenres = {}
+
+    endPoints.forEach((url) => {
+      promises.push(fetchDataFromApi(`/genre/${url}/list`))
+    })
+
+    const data = await Promise.all(promises)
+    console.log(data)
+    data.map(({genres}) => {
+      return genres.map((item) => {
+        return allGenres[item.id] = item
+      })
+    })
     
-    // fetch('https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1', options)
-    //   .then(response => response.json())
-    //   .then(response => console.log(response))
-    //   .catch(err => console.error(err));
+    dispatch(getGenres(allGenres))
   }
 
   return (
