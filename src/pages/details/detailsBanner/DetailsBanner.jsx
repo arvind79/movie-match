@@ -15,19 +15,21 @@ import { PlayIcon } from "../PlayIcon";
 import VideoPopup from "../../../components/videoPopup/VideoPopup";
 
 const DetailsBanner = ({ video, crew }) => {
-  const [show, setShow] = useState(false)
-  const [videoId, setVideoId] = useState(null)
+  const [show, setShow] = useState(false);
+  const [videoId, setVideoId] = useState(null);
 
   const { mediaType, id } = useParams();
-  const {data, loading} = useFetch(`/${mediaType}/${id}`);
+  const { data, loading } = useFetch(`/${mediaType}/${id}`);
 
-  const {url} = useSelector((state) => state.home)
+  const { url } = useSelector((state) => state.home);
 
-  const _genres = data?.genres?.map((g) => g.id)
+  const _genres = data?.genres?.map((g) => g.id);
 
-  const director = crew?.filter((f) => f.job === "Director")
-  const writer = crew?.filter((f) => f.job === "Screenplay" || f.job === "Story" || f.job === "Writer")
-  console.log(director)
+  const director = crew?.filter((f) => f.job === "Director");
+  const writer = crew?.filter(
+    (f) => f.job === "Screenplay" || f.job === "Story" || f.job === "Writer"
+  );
+  console.log(director);
 
   const toHoursAndMinutes = (totalMinutes) => {
     const hours = Math.floor(totalMinutes / 60);
@@ -49,65 +51,53 @@ const DetailsBanner = ({ video, crew }) => {
                 <div className="content">
                   <div className="left">
                     {data.poster_path ? (
-                      <Img 
-                      className="posterImg" 
-                      src={url.backdrop + data.poster_path} 
+                      <Img
+                        className="posterImg"
+                        src={url.backdrop + data.poster_path}
                       />
                     ) : (
-                      <Img 
-                      className="posterImg" 
-                      src={PosterFallback} 
-                      />
+                      <Img className="posterImg" src={PosterFallback} />
                     )}
                   </div>
                   <div className="right">
                     <div className="title">
-                      {`${data.name || data.title} (${dayjs(data?.release_date).format("YYYY")})`}
+                      {`${data.name || data.title} (${dayjs(
+                        data?.release_date
+                      ).format("YYYY")})`}
                     </div>
-                    <div className="subtitle">
-                      {data.tagline}
-                    </div>
+                    <div className="subtitle">{data.tagline}</div>
 
                     <Genres data={_genres} />
 
                     <div className="row">
                       <CircleRating rating={data?.vote_average.toFixed(1)} />
-                      <div className="playbtn" onClick={() => {
-                        setShow(true)
-                        setVideoId(video.key)
-                      }}>
+                      <div
+                        className="playbtn"
+                        onClick={() => {
+                          setShow(true);
+                          setVideoId(video.key);
+                        }}
+                      >
                         <PlayIcon />
-                        <span className="text">
-                          Watch Trailer
-                        </span>
+                        <span className="text">Watch Trailer</span>
                       </div>
                     </div>
 
                     <div className="overview">
-                      <div className="heading">
-                        Overview
-                      </div>
-                      <div className="description">
-                        {data.overview}
-                      </div>
+                      <div className="heading">Overview</div>
+                      <div className="description">{data.overview}</div>
                     </div>
 
                     <div className="info">
                       {data.status && (
                         <div className="infoItem">
-                          <span className="text bold">
-                            Status: {" "}
-                          </span>
-                          <span className="text">
-                            {data.status}
-                          </span>
+                          <span className="text bold">Status: </span>
+                          <span className="text">{data.status}</span>
                         </div>
                       )}
                       {data.release_date && (
                         <div className="infoItem">
-                          <span className="text bold">
-                            Release Date: {" "}
-                          </span>
+                          <span className="text bold">Release Date: </span>
                           <span className="text">
                             {dayjs(data?.release_date).format("MMM D, YYYY")}
                           </span>
@@ -115,21 +105,17 @@ const DetailsBanner = ({ video, crew }) => {
                       )}
                       {data.runtime && (
                         <div className="infoItem">
-                          <span className="text bold">
-                            Run Time: {" "}
-                          </span>
+                          <span className="text bold">Run Time: </span>
                           <span className="text">
                             {toHoursAndMinutes(data.runtime)}
                           </span>
                         </div>
                       )}
                     </div>
-                      
+
                     {director?.length > 0 && (
                       <div className="info">
-                        <span className="text bold">
-                          Director: {" "}
-                        </span>
+                        <span className="text bold">Director: </span>
                         <span className="text">
                           {director?.map((d, i) => (
                             <span key={i}>
@@ -143,9 +129,7 @@ const DetailsBanner = ({ video, crew }) => {
 
                     {writer?.length > 0 && (
                       <div className="info">
-                        <span className="text bold">
-                          Writer: {" "}
-                        </span>
+                        <span className="text bold">Writer: </span>
                         <span className="text">
                           {writer?.map((d, i) => (
                             <span key={i}>
@@ -159,9 +143,7 @@ const DetailsBanner = ({ video, crew }) => {
 
                     {data?.created_by?.length > 0 && (
                       <div className="info">
-                        <span className="text bold">
-                          Creator: {" "}
-                        </span>
+                        <span className="text bold">Creator: </span>
                         <span className="text">
                           {data?.created_by?.map((d, i) => (
                             <span key={i}>
@@ -172,7 +154,6 @@ const DetailsBanner = ({ video, crew }) => {
                         </span>
                       </div>
                     )}
-
                   </div>
                 </div>
                 <VideoPopup
